@@ -1,19 +1,19 @@
-import { apiClient, API_ENDPOINTS } from '../utils/api';
+import apiClient from '@/api/client';
 
 export class PropertyService {
   // Create new property
   static async create(propertyData) {
-    return await apiClient.post(API_ENDPOINTS.properties.base, propertyData);
+    return await apiClient.post('/properties', propertyData);
   }
 
   // Get property by ID
   static async getById(propertyId) {
-    return await apiClient.get(API_ENDPOINTS.properties.byId(propertyId));
+    return await apiClient.get(`/properties/${propertyId}`);
   }
 
   // Update property
   static async update(propertyId, updateData) {
-    return await apiClient.put(API_ENDPOINTS.properties.byId(propertyId), updateData);
+    return await apiClient.put(`/properties/${propertyId}`, updateData);
   }
 
   // Upload property photos
@@ -26,14 +26,14 @@ export class PropertyService {
         categoryPhotos.forEach((photo, index) => {
           if (photo instanceof File) {
             uploadPromises.push(
-              apiClient.uploadFile(API_ENDPOINTS.properties.uploadPhotos(propertyId), photo)
+              apiClient.uploadFile(`/properties/${propertyId}/photos`, photo)
                 .then(result => ({ category, index, ...result }))
             );
           }
         });
       } else if (categoryPhotos instanceof File) {
         uploadPromises.push(
-          apiClient.uploadFile(API_ENDPOINTS.properties.uploadPhotos(propertyId), categoryPhotos)
+          apiClient.uploadFile(`/properties/${propertyId}/photos`, categoryPhotos)
             .then(result => ({ category, ...result }))
         );
       }
@@ -45,13 +45,13 @@ export class PropertyService {
   // Get all properties
   static async list(filters = {}) {
     const queryParams = new URLSearchParams(filters).toString();
-    const endpoint = queryParams ? `${API_ENDPOINTS.properties.base}?${queryParams}` : API_ENDPOINTS.properties.base;
+    const endpoint = queryParams ? `/properties?${queryParams}` : '/properties';
     return await apiClient.get(endpoint);
   }
 
   // Delete property
   static async delete(propertyId) {
-    return await apiClient.delete(API_ENDPOINTS.properties.byId(propertyId));
+    return await apiClient.delete(`/properties/${propertyId}`);
   }
 }
 

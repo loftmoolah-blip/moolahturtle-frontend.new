@@ -64,9 +64,9 @@ If you are not using Docker, you can run the frontend and backend services separ
 -   Your backend server running on \`http://localhost:3001\`
 
 ### Frontend Setup
-1.  **Update API Host**: In \`components/utils/api.js\`, ensure \`API_BASE_URL\` points to your local backend:
+1.  **Update API Host**: In \`api/client.js\`, ensure the \`baseURL\` points to your local backend:
     \`\`\`javascript
-    const API_BASE_URL = 'http://localhost:3001/api';
+    const apiClient = axios.create({ baseURL: 'http://localhost:3001/api' })
     \`\`\`
 2.  **Install Dependencies**:
     \`\`\`bash
@@ -101,7 +101,7 @@ The source of truth for all data structures is located in the \`entities/\` dire
 - \`entities/Property.json\`
 
 ### 4. Required API Endpoints
-The backend must implement the following endpoints. The full list is defined in the frontend file \`components/utils/api.js\`.
+The backend must implement the following endpoints. API requests use the axios client defined in \`api/client.js\`.
 
 **Seller Flow:**
 - \`POST /api/sellers/register\`
