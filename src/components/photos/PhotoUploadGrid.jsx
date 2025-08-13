@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { UploadFile } from "@/api/integrations";
+import apiClient from "@/api/client";
 import { Upload, Trash2, CheckCircle, Loader2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -14,7 +14,7 @@ export default function PhotoUploadGrid({ onComplete, setUploadedPhotos, uploade
     if (files.length === 0) return;
 
     setIsUploading(true);
-    const uploadPromises = files.map(file => UploadFile({ file }));
+    const uploadPromises = files.map(file => apiClient.uploadFile('/files', file));
     
     try {
       const results = await Promise.all(uploadPromises);
