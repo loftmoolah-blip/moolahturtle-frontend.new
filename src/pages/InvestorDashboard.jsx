@@ -1,12 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { User, MapPin, Home, Bed, Bath, DollarSign, Eye, MoreHorizontal, Plus, Settings } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useAuth } from '@/components/hooks/useAuth';
-import { InvestorService } from '@/components/services/investorService';
+import {
+  User,
+  MapPin,
+  Home,
+  Bed,
+  Bath,
+  DollarSign,
+  Eye,
+  MoreHorizontal,
+  Plus,
+  Settings,
+} from "lucide-react";
+import { AnimatePresence } from "framer-motion";
+import { useAuth } from "@/components/hooks/useAuth";
 
 // Mock components for now to prevent import errors
 const StatsWidgets = ({ leads }) => (
@@ -36,7 +46,7 @@ const StatsWidgets = ({ leads }) => (
   </div>
 );
 
-const InvestorProfile = ({ investor, show, onClose, onUpdate }) => {
+const InvestorProfile = ({ investor, show, onClose }) => {
   if (!show) return null;
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
@@ -45,7 +55,7 @@ const InvestorProfile = ({ investor, show, onClose, onUpdate }) => {
           <CardTitle>Profile (Mock)</CardTitle>
         </CardHeader>
         <CardContent>
-          <p>Profile component placeholder</p>
+          <p>Profile component placeholder for {investor?.full_name}</p>
           <Button onClick={onClose} className="mt-4">Close</Button>
         </CardContent>
       </Card>
@@ -65,7 +75,7 @@ const CoverageMapDisplay = ({ investor, onEditCoverage }) => (
   </Card>
 );
 
-const LeadsTable = ({ leads, onLeadClick, onAction }) => (
+const LeadsTable = ({ leads, onLeadClick }) => (
   <div className="space-y-4">
     {leads?.length === 0 ? (
       <p className="text-center text-gray-500 py-8">No leads available</p>
@@ -142,37 +152,34 @@ import { useNavigate } from 'react-router-dom';
 import { createPageUrl } from '@/utils';
 
 export default function InvestorDashboard() {
-  const { user, loading: authLoading, isAuthenticated } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
-
-  const [investor, setInvestor] = useState(null);
   const [leads, setLeads] = useState([]);
   const [showProfile, setShowProfile] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [actionModal, setActionModal] = useState({ show: false, action: '', leadId: null });
   const [showCoverageEdit, setShowCoverageEdit] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
     // Wait until authentication status is determined
-    if (!authLoading) {
+    if (!loading) {
       if (!isAuthenticated) {
-        navigate(createPageUrl('InvestorLogin'));
+        navigate(createPageUrl("InvestorLogin"));
       } else {
-        setInvestor(user);
         loadDashboardData(user?.id);
       }
     }
-  }, [authLoading, isAuthenticated, user, navigate]);
+  }, [loading, isAuthenticated, user, navigate]);
 
   const loadDashboardData = async (investorId) => {
     if (!investorId) {
-      setLoading(false);
+      setDataLoading(false);
       return;
     }
-    
+
     try {
-      setLoading(true);
+      setDataLoading(true);
       // Mock data for now to prevent API errors
       const mockLeads = [
         {
@@ -190,15 +197,11 @@ export default function InvestorDashboard() {
       ];
       setLeads(mockLeads);
     } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      console.error("Error loading dashboard data:", error);
       setLeads([]);
     } finally {
-      setLoading(false);
+      setDataLoading(false);
     }
-  };
-
-  const handleAction = (action, leadId) => {
-    console.log('Action:', action, 'Lead ID:', leadId);
   };
 
   const handleLeadClick = (lead) => {
@@ -209,16 +212,9 @@ export default function InvestorDashboard() {
     setShowCoverageEdit(true);
   };
 
-  const handleCoverageUpdate = (updatedCoverageAreas) => {
-    setInvestor(prev => ({
-      ...prev,
-      coverage_areas: updatedCoverageAreas
-    }));
-    setShowCoverageEdit(false);
-  };
 
   // Show loading spinner if authentication is in progress or data is loading
-  if (authLoading || loading) {
+  if (loading || dataLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center">
         <div className="text-center">
@@ -229,8 +225,8 @@ export default function InvestorDashboard() {
     );
   }
 
-  // Fallback for unauthenticated or if investor data is not available
-  if (!isAuthenticated || !investor) {
+  // Fallback for unauthenticated or if user data is not available
+  if (!isAuthenticated || !user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 flex items-center justify-center">
         <div className="text-center">
@@ -250,7 +246,7 @@ export default function InvestorDashboard() {
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Investor Dashboard</h1>
-            <p className="text-gray-600 mt-1">Welcome back, {investor?.full_name || 'Investor'}!</p>
+            <p className="text-gray-600 mt-1">Welcome back, {user?.full_name || 'Investor'}!</p>
           </div>
           <div className="flex items-center gap-4">
             <Button
@@ -262,9 +258,9 @@ export default function InvestorDashboard() {
               Profile
             </Button>
             <Avatar className="h-10 w-10 cursor-pointer" onClick={() => setShowProfile(true)}>
-              <AvatarImage src={investor?.avatar_url} />
+              <AvatarImage src={user?.avatar_url} />
               <AvatarFallback className="bg-green-500 text-white">
-                {investor?.full_name?.charAt(0) || 'I'}
+                {user?.full_name?.charAt(0) || 'I'}
               </AvatarFallback>
             </Avatar>
           </div>
@@ -274,7 +270,7 @@ export default function InvestorDashboard() {
         <StatsWidgets leads={leads} />
 
         {/* Coverage Map */}
-        <CoverageMapDisplay investor={investor} onEditCoverage={handleEditCoverage} />
+        <CoverageMapDisplay investor={user} onEditCoverage={handleEditCoverage} />
 
         {/* Leads Section */}
         <div className="mt-8">
@@ -293,11 +289,7 @@ export default function InvestorDashboard() {
               </div>
             </CardHeader>
             <CardContent>
-              <LeadsTable
-                leads={leads}
-                onLeadClick={handleLeadClick}
-                onAction={handleAction}
-              />
+              <LeadsTable leads={leads} onLeadClick={handleLeadClick} />
             </CardContent>
           </Card>
         </div>
@@ -305,10 +297,9 @@ export default function InvestorDashboard() {
 
       {/* Modals */}
       <InvestorProfile
-        investor={investor}
+        investor={user}
         show={showProfile}
         onClose={() => setShowProfile(false)}
-        onUpdate={setInvestor}
       />
 
       <LeadDetailModal
