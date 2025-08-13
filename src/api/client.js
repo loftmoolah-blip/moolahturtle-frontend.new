@@ -17,7 +17,7 @@ apiClient.interceptors.response.use(
 );
 
 // Helper for uploading files using multipart/form-data
-apiClient.uploadFile = async (endpoint, file) => {
+export const uploadFile = async (endpoint, file) => {
   const formData = new FormData();
   formData.append('file', file);
   const { data } = await apiClient.post(endpoint, formData, {

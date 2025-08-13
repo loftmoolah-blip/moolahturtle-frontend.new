@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import apiClient from "@/api/client";
+import { uploadFile } from "@/api/client";
 import { Upload, Trash2, CheckCircle, Loader2 } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion as Motion, AnimatePresence } from 'framer-motion';
 
 export default function PhotoUploadGrid({ onComplete, setUploadedPhotos, uploadedPhotos }) {
   const [isUploading, setIsUploading] = useState(false);
@@ -14,7 +14,7 @@ export default function PhotoUploadGrid({ onComplete, setUploadedPhotos, uploade
     if (files.length === 0) return;
 
     setIsUploading(true);
-    const uploadPromises = files.map(file => apiClient.uploadFile('/files', file));
+    const uploadPromises = files.map(file => uploadFile('/files', file));
     
     try {
       const results = await Promise.all(uploadPromises);
@@ -41,7 +41,7 @@ export default function PhotoUploadGrid({ onComplete, setUploadedPhotos, uploade
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
           <AnimatePresence>
             {uploadedPhotos.map((url) => (
-              <motion.div
+              <Motion.div
                 key={url}
                 layout
                 initial={{ opacity: 0, scale: 0.5 }}
@@ -58,7 +58,7 @@ export default function PhotoUploadGrid({ onComplete, setUploadedPhotos, uploade
                 >
                   <Trash2 className="w-4 h-4" />
                 </Button>
-              </motion.div>
+              </Motion.div>
             ))}
           </AnimatePresence>
 
