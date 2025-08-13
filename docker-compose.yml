@@ -1,6 +1,9 @@
 services:
   frontend:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: runtime
     container_name: moolahturtle-frontend
     ports:
       - "8080:80"
