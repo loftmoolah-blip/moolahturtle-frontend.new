@@ -51,19 +51,19 @@ export default function PhotoUploadIntro() {
     const { sellerId: storedSellerId, ...property } = storedProperty;
     const finalSellerId = sellerId || storedSellerId;
     const finalPropertyId = propertyId || property.propertyId;
+    const finalProperty = { ...property, propertyId: finalPropertyId };
 
     try {
       await LeadService.create({
         sellerId: finalSellerId,
-        property,
+        property: finalProperty,
         photos: [],
       });
       localStorage.removeItem('moolahturtle_property');
     } catch (error) {
       console.error('Error creating lead:', error);
     }
-
-    navigate(createPageUrl(`PropertyListed?seller_id=${finalSellerId}&property_id=${finalPropertyId}`));
+    navigate(createPageUrl('Dashboard'));
   };
 
   return (
