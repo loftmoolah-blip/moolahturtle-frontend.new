@@ -78,6 +78,7 @@ export class InvestorService {
   // Logout
   static async logout() {
     apiClient.setToken(null);
+    localStorage.removeItem('token');
     localStorage.removeItem('investorId');
     localStorage.removeItem('investorEmail');
   }

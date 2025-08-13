@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { useAuth } from '@/auth/AuthProvider.jsx';
 import { LogIn, LogOut, UserPlus, LayoutDashboard } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { InvestorService } from '@/components/services/investorService';
 
 const navLinks = [
   { name: 'Home', path: createPageUrl('Home') },
@@ -63,7 +64,12 @@ const Header = ({ currentPageName }) => {
                   <LayoutDashboard className="w-4 h-4 mr-2" />
                   Dashboard
                 </Button>
-                <Button onClick={logout}>
+                <Button
+                  onClick={async () => {
+                    await InvestorService.logout();
+                    logout();
+                  }}
+                >
                   <LogOut className="w-4 h-4 mr-2" />
                   Logout
                 </Button>
