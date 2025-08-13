@@ -16,6 +16,7 @@ export const routeMap = {
   InvestorLogin: "/investor/login",
   InvestorDashboard: "/investor/dashboard",
   ForgotPassword: "/forgot-password",
+  ResetPassword: "/reset-password",
   EmailConfirmation: "/email-confirmation",
 
   PropertyDetails: "/property/details",
