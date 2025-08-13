@@ -73,7 +73,11 @@ export class InvestorService {
 
   // Logout
   static async logout() {
-    await apiClient.post('/auth/logout');
+    try {
+      await apiClient.post('/auth/logout');
+    } finally {
+      document.cookie = 'session=; Max-Age=0';
+    }
   }
 
   // Get all investors (admin only)

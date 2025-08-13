@@ -39,9 +39,11 @@ export const AuthProvider = ({ children }) => {
       await apiClient.post("/auth/logout");
     } catch {
       // ignore errors during logout
+    } finally {
+      document.cookie = "session=; Max-Age=0";
+      setUser(null);
+      setIsAuthenticated(false);
     }
-    setUser(null);
-    setIsAuthenticated(false);
   };
 
   useEffect(() => {
