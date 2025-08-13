@@ -8,11 +8,11 @@ export class InvestorService {
 
   // Login investor
   static async login(credentials) {
-    const response = await apiClient.post('/auth/login', credentials);
-    if (response.token) {
-      apiClient.defaults.headers.common.Authorization = `Bearer ${response.token}`;
+    const { data } = await apiClient.post('/auth/login', credentials);
+    if (data.token) {
+      apiClient.defaults.headers.common.Authorization = `Bearer ${data.token}`;
     }
-    return response;
+    return data;
   }
 
   // Send SMS verification code
