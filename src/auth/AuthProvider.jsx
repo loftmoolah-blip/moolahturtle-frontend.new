@@ -59,6 +59,12 @@ export const AuthProvider = ({ children }) => {
     setIsAuthenticated(false);
   };
 
+  useEffect(() => {
+    const handleLogout = () => logout();
+    window.addEventListener("logout", handleLogout);
+    return () => window.removeEventListener("logout", handleLogout);
+  }, [logout]);
+
   return (
     <Ctx.Provider value={{ isAuthenticated, user, token, loading, login, logout }}>
       {children}
