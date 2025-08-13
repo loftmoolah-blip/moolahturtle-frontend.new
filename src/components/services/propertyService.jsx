@@ -1,4 +1,4 @@
-import apiClient from '@/api/client';
+import apiClient, { uploadFile } from '@/api/client';
 
 export class PropertyService {
   // Create new property
@@ -26,14 +26,14 @@ export class PropertyService {
         categoryPhotos.forEach((photo, index) => {
           if (photo instanceof File) {
             uploadPromises.push(
-              apiClient.uploadFile(`/properties/${propertyId}/photos`, photo)
+              uploadFile(`/properties/${propertyId}/photos`, photo)
                 .then(result => ({ category, index, ...result }))
             );
           }
         });
       } else if (categoryPhotos instanceof File) {
         uploadPromises.push(
-          apiClient.uploadFile(`/properties/${propertyId}/photos`, categoryPhotos)
+          uploadFile(`/properties/${propertyId}/photos`, categoryPhotos)
             .then(result => ({ category, ...result }))
         );
       }
