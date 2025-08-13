@@ -1,5 +1,5 @@
-import { useState } from "react";
-import apiClient from "@/api/client";
+import { useState } from 'react';
+import apiClient from '@/api/client';
 
 export default function Leads() {
   const [result, setResult] = useState("Click to test /health on your backend");
