@@ -18,3 +18,9 @@ To build and run the production container:
 ```bash
  docker-compose up --build
 ```
+
+## API Routes
+
+All frontend API requests are made through the shared `apiClient` configured with a `baseURL` of `/api`. The provided
+`nginx.conf` proxies all requests that begin with this prefix to the backend service. When adding new API routes, ensure
+their paths start with `/api` so they are correctly forwarded.
