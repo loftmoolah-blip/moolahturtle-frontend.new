@@ -45,17 +45,17 @@ export default function InvestorLogin() {
     setIsLoading(true);
     
     try {
-      const response = await InvestorService.login(form.values);
-      
+      const { token, user } = await InvestorService.login(form.values);
+
       // Check if email is verified
-      if (!response.user.email_verified) {
+      if (!user.email_verified) {
         error('Please verify your email address before logging in.');
         // Redirect to email confirmation page
-        navigate(createPageUrl(`EmailConfirmation?email=${encodeURIComponent(response.user.email)}`));
+        navigate(createPageUrl(`EmailConfirmation?email=${encodeURIComponent(user.email)}`));
         return;
       }
 
-      await authLogin(response.token, response.user);
+      await authLogin(token, user);
       success('Login successful! Redirecting to dashboard...');
       navigate(createPageUrl('InvestorDashboard'));
     } catch (err) {
