@@ -33,14 +33,18 @@ export const AuthProvider = ({ children }) => {
       .finally(() => setLoading(false));
   }, []);
 
-  const login = async (newToken) => {
+  const login = async (newToken, userData) => {
     localStorage.setItem("token", newToken);
     setToken(newToken);
     apiClient.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
     setLoading(true);
     try {
-      const { data } = await apiClient.get(API_ENDPOINTS.auth.me);
-      setUser(data);
+      if (userData) {
+        setUser(userData);
+      } else {
+        const { data } = await apiClient.get(API_ENDPOINTS.auth.me);
+        setUser(data);
+      }
       setIsAuthenticated(true);
     } finally {
       setLoading(false);
