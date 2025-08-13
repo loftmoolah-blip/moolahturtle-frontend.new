@@ -1,0 +1,26 @@
+# Dependencies
+node_modules
+
+# Build output
+/dist
+/build
+.vite
+
+# Git
+.git
+.gitignore
+
+# Environment files
+.env
+.env.*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Docker and compose files
+docker-compose.yml
+
+# Misc
+.DS_Store
