@@ -26,6 +26,7 @@ export default function RegistrationForm({ onSubmit, initialData }) {
   const [otpCode, setOtpCode] = useState('');
   const [emailSent, setEmailSent] = useState(false);
   const [emailDispatched, setEmailDispatched] = useState(false);
+  const [investorId, setInvestorId] = useState(null);
 
   const registrationSchema = {
     full_name: [validationRules.required, validationRules.minLength(2)],
@@ -69,7 +70,9 @@ export default function RegistrationForm({ onSubmit, initialData }) {
         console.error('Email confirmation failed:', emailErr);
       }
 
-      await InvestorService.sendVerificationCode(form.values.phone);
+      const response = await InvestorService.sendVerificationCode(form.values.phone);
+      const data = response?.data || response;
+      setInvestorId(data?.investorId || data?.investor_id || data?.id || null);
       setShowOTP(true);
       success('Verification code sent successfully!');
     } catch (err) {
@@ -88,9 +91,7 @@ export default function RegistrationForm({ onSubmit, initialData }) {
     setIsLoading(true);
     
     try {
-      // In a real scenario, you'd verify OTP with the backend:
-      // await InvestorService.verifyOTP(form.values.phone, otpCode);
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call (successful phone verification and account creation)
+      await InvestorService.verifyPhone(investorId, otpCode);
       if (emailDispatched) {
         setEmailSent(true);
         success('Account created! Please check your email to verify your account.');
