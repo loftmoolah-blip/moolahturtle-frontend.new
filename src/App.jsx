@@ -13,6 +13,7 @@ import InvestorRegistration from "@/pages/InvestorRegistration.jsx";
 import InvestorLogin from "@/pages/InvestorLogin.jsx";
 import InvestorDashboard from "@/pages/InvestorDashboard.jsx";
 import ForgotPassword from "@/pages/ForgotPassword.jsx";
+import ResetPassword from "@/pages/ResetPassword.jsx";
 import EmailConfirmation from "@/pages/EmailConfirmation.jsx";
 
 import PropertyDetails from "@/pages/PropertyDetails.jsx";
@@ -33,6 +34,7 @@ const pageComponents = {
   InvestorLogin,
   InvestorDashboard,
   ForgotPassword,
+  ResetPassword,
   EmailConfirmation,
   PropertyDetails,
   PropertyListed,
