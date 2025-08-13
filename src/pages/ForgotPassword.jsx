@@ -80,7 +80,7 @@ export default function ForgotPassword() {
               required
             />
             
-            <Button 
+            <Button
               type="submit"
               disabled={isLoading || !form.isValid}
               className="w-full py-6 text-lg bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 disabled:opacity-50"
@@ -91,14 +91,19 @@ export default function ForgotPassword() {
                 'Send Reset Link'
               )}
             </Button>
-            
-            <div className="text-center">
+            <div className="text-center space-y-2">
               <Link
-                  to={createPageUrl('InvestorLogin')}
-                  className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center justify-center gap-2"
-                >
-                  <ArrowLeft className="w-4 h-4" />
-                  Back to Login
+                to={createPageUrl('ResetPassword')}
+                className="text-sm text-green-600 hover:text-green-700 font-medium"
+              >
+                Already have a reset token? Reset your password
+              </Link>
+              <Link
+                to={createPageUrl('InvestorLogin')}
+                className="text-sm text-green-600 hover:text-green-700 font-medium flex items-center justify-center gap-2"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Login
               </Link>
             </div>
           </form>

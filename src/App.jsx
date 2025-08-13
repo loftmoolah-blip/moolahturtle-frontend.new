@@ -34,7 +34,6 @@ const pageComponents = {
   InvestorLogin,
   InvestorDashboard,
   ForgotPassword,
-  ResetPassword,
   EmailConfirmation,
   PropertyDetails,
   PropertyListed,
@@ -52,9 +51,14 @@ function Shell() {
     <LayoutComponent currentPageName={currentPageName}>
       <Routes>
         {Object.entries(routeMap).map(([pageName, path]) => {
+          if (pageName === "ResetPassword") return null;
           const Component = pageComponents[pageName];
           return <Route key={pageName} path={path} element={<Component />} />;
         })}
+        <Route
+          path={routeMap.ResetPassword}
+          element={<ResetPassword />}
+        />
       </Routes>
     </LayoutComponent>
   );
