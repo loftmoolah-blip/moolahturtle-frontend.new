@@ -1,0 +1,39 @@
+// src/components/services/sellerService.js
+import { apiClient } from '../utils/api';
+
+export class SellerService {
+  // Register new seller (keep if needed by your flow)
+  static async register(sellerData) {
+    return await apiClient.post('/api/sellers', sellerData);
+  }
+
+  // Send SMS verification code (backend expects { name, phone } at 
+/api/sms/send)
+  static async sendVerificationCode(name, phone) {
+    return await apiClient.post('/api/sms/send', { name, phone });
+  }
+
+  // Verify phone number with OTP (backend expects { phone, code } at 
+/api/sms/verify)
+  static async verifyPhone(phone, code) {
+    return await apiClient.post('/api/sms/verify', { phone, code });
+  }
+
+  // Get seller by ID (unchanged)
+  static async getById(sellerId) {
+    return await apiClient.get(`/api/sellers/${sellerId}`);
+  }
+
+  // Update seller (unchanged)
+  static async update(sellerId, updateData) {
+    return await apiClient.put(`/api/sellers/${sellerId}`, updateData);
+  }
+
+  // Get all sellers (admin only) (unchanged)
+  static async list() {
+    return await apiClient.get('/api/sellers');
+  }
+}
+
+export default SellerService;
+
