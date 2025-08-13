@@ -25,6 +25,7 @@ export default function RegistrationForm({ onSubmit, initialData }) {
   const [isLoading, setIsLoading] = useState(false);
   const [otpCode, setOtpCode] = useState('');
   const [emailSent, setEmailSent] = useState(false);
+  const [emailDispatched, setEmailDispatched] = useState(false);
 
   const registrationSchema = {
     full_name: [validationRules.required, validationRules.minLength(2)],
@@ -57,10 +58,17 @@ export default function RegistrationForm({ onSubmit, initialData }) {
       error('Please fill in all required fields correctly.');
       return;
     }
-    
+
     setIsLoading(true);
-    
+
     try {
+      try {
+        await InvestorService.sendEmailConfirmation(form.values.email);
+        setEmailDispatched(true);
+      } catch (emailErr) {
+        console.error('Email confirmation failed:', emailErr);
+      }
+
       await InvestorService.sendVerificationCode(form.values.phone);
       setShowOTP(true);
       success('Verification code sent successfully!');
@@ -83,19 +91,14 @@ export default function RegistrationForm({ onSubmit, initialData }) {
       // In a real scenario, you'd verify OTP with the backend:
       // await InvestorService.verifyOTP(form.values.phone, otpCode);
       await new Promise(resolve => setTimeout(resolve, 500)); // Simulate API call (successful phone verification and account creation)
-      
-      // After successful phone verification (and implicit account creation), send email confirmation
-      try {
-        await InvestorService.sendEmailConfirmation(form.values.email);
+      if (emailDispatched) {
         setEmailSent(true);
         success('Account created! Please check your email to verify your account.');
-      } catch (emailErr) {
-        // Even if email sending fails, we still created the account
-        console.error('Email confirmation failed:', emailErr);
+      } else {
         success('Account created! You can now log in.');
-        onSubmit({ ...form.values, phone_verified: true }); // Call onSubmit here if email sending fails
+        onSubmit({ ...form.values, phone_verified: true });
       }
-      
+
     } catch (err) {
       error(err.message || 'Invalid verification code. Please try again.');
     } finally {
