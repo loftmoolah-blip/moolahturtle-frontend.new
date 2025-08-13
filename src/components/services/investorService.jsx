@@ -3,7 +3,8 @@ import apiClient from '@/api/client';
 export class InvestorService {
   // Register new investor
   static async register(investorData) {
-    return await apiClient.post('/investors/register', investorData);
+    const { data } = await apiClient.post('/investors/register', investorData);
+    return data;
   }
 
   // Login investor
