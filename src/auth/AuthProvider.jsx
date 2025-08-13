@@ -7,19 +7,9 @@ export const useAuth = () => useContext(Ctx);
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    if (!storedToken) {
-      setLoading(false);
-      return;
-    }
-
-    setToken(storedToken);
-    apiClient.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
-
     apiClient
       .get("/auth/me")
       .then(({ data }) => {
@@ -27,35 +17,30 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true);
       })
       .catch(() => {
-        localStorage.removeItem("token");
-        setToken(null);
+        setUser(null);
+        setIsAuthenticated(false);
       })
       .finally(() => setLoading(false));
   }, []);
 
-  const login = async (newToken, userData) => {
-    localStorage.setItem("token", newToken);
-    setToken(newToken);
-    apiClient.defaults.headers.common["Authorization"] = `Bearer ${newToken}`;
+  const login = async () => {
     setLoading(true);
     try {
-      if (userData) {
-        setUser(userData);
-      } else {
-        const { data } = await apiClient.get("/auth/me");
-        setUser(data);
-      }
+      const { data } = await apiClient.get("/auth/me");
+      setUser(data);
       setIsAuthenticated(true);
     } finally {
       setLoading(false);
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    delete apiClient.defaults.headers.common["Authorization"];
+  const logout = async () => {
+    try {
+      await apiClient.post("/auth/logout");
+    } catch {
+      // ignore errors during logout
+    }
     setUser(null);
-    setToken(null);
     setIsAuthenticated(false);
   };
 
@@ -63,10 +48,10 @@ export const AuthProvider = ({ children }) => {
     const handleLogout = () => logout();
     window.addEventListener("logout", handleLogout);
     return () => window.removeEventListener("logout", handleLogout);
-  }, [logout]);
+  }, []);
 
   return (
-    <Ctx.Provider value={{ isAuthenticated, user, token, loading, login, logout }}>
+    <Ctx.Provider value={{ isAuthenticated, user, loading, login, logout }}>
       {children}
     </Ctx.Provider>
   );

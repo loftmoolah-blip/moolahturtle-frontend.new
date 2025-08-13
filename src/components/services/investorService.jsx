@@ -9,9 +9,6 @@ export class InvestorService {
   // Login investor
   static async login(credentials) {
     const { data } = await apiClient.post('/auth/login', credentials);
-    if (data.token) {
-      apiClient.defaults.headers.common.Authorization = `Bearer ${data.token}`;
-    }
     return data;
   }
 
@@ -76,10 +73,7 @@ export class InvestorService {
 
   // Logout
   static async logout() {
-    delete apiClient.defaults.headers.common.Authorization;
-    localStorage.removeItem('token');
-    localStorage.removeItem('investorId');
-    localStorage.removeItem('investorEmail');
+    await apiClient.post('/auth/logout');
   }
 
   // Get all investors (admin only)
