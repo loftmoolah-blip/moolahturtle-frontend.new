@@ -1,12 +1,12 @@
 import { useState } from "react";
-import api from "@/lib/api";
+import apiClient from "@/api/client";
 
 export default function Leads() {
   const [result, setResult] = useState("Click to test /health on your backend");
 
   const testHealth = async () => {
     try {
-      const { data, status } = await api.get("/health");
+      const { data, status } = await apiClient.get("/health");
       setResult(`OK (status ${status}) → ${typeof data === "string" ? data : JSON.stringify(data)}`);
     } catch (e) {
       setResult(`ERROR → ${e.message}`);

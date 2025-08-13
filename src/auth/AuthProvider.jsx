@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import apiClient, { API_ENDPOINTS } from "@/components/utils/api";
+import apiClient from "@/api/client";
 
 const Ctx = createContext(null);
 export const useAuth = () => useContext(Ctx);
@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
     apiClient.defaults.headers.common["Authorization"] = `Bearer ${storedToken}`;
 
     apiClient
-      .get(API_ENDPOINTS.auth.me)
+      .get("/auth/me")
       .then(({ data }) => {
         setUser(data);
         setIsAuthenticated(true);
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
       if (userData) {
         setUser(userData);
       } else {
-        const { data } = await apiClient.get(API_ENDPOINTS.auth.me);
+        const { data } = await apiClient.get("/auth/me");
         setUser(data);
       }
       setIsAuthenticated(true);
