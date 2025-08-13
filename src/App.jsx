@@ -1,5 +1,6 @@
-import { BrowserRouter, Routes, Route, Link, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import LayoutComponent from "@/components/common/LayoutComponent.jsx";
+import { routeMap, pageNameFromPath } from "@/utils/index.js";
 
 // Pages we’ve wired so far (add more as you go)
 import Home from "@/pages/Home.jsx";
@@ -22,58 +23,36 @@ import PhotoUploadIntro from "@/pages/PhotoUploadIntro.jsx";
 import InvestorSuccess from "@/pages/InvestorSuccess.jsx";
 import Congratulations from "@/pages/Congratulations.jsx";
 
-// Map paths back to “page names” for the header’s current page label
-const pathToPageName = (pathname) => {
-  const map = {
-    "/": "Home",
-    "/how-it-works": "HowItWorks",
-    "/investors": "Investors",
-    "/docs": "Documentation",
-
-    "/register": "Register",
-    "/investor/register": "InvestorRegistration",
-    "/investor/login": "InvestorLogin",
-    "/investor/dashboard": "InvestorDashboard",
-    "/forgot-password": "ForgotPassword",
-    "/email-confirmation": "EmailConfirmation",
-
-    "/property/details": "PropertyDetails",
-    "/property/listed": "PropertyListed",
-    "/photo/upload": "PhotoUpload",
-    "/photo/upload/intro": "PhotoUploadIntro",
-
-    "/investor/success": "InvestorSuccess",
-    "/congratulations": "Congratulations",
-  };
-  return map[pathname] || "Home";
+const pageComponents = {
+  Home,
+  HowItWorks,
+  Investors,
+  Documentation,
+  Register,
+  InvestorRegistration,
+  InvestorLogin,
+  InvestorDashboard,
+  ForgotPassword,
+  EmailConfirmation,
+  PropertyDetails,
+  PropertyListed,
+  PhotoUpload,
+  PhotoUploadIntro,
+  InvestorSuccess,
+  Congratulations,
 };
 
 function Shell() {
   const { pathname } = useLocation();
-  const currentPageName = pathToPageName(pathname);
+  const currentPageName = pageNameFromPath(pathname);
 
   return (
     <LayoutComponent currentPageName={currentPageName}>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/how-it-works" element={<HowItWorks />} />
-        <Route path="/investors" element={<Investors />} />
-        <Route path="/docs" element={<Documentation />} />
-
-        <Route path="/register" element={<Register />} />
-        <Route path="/investor/register" element={<InvestorRegistration />} />
-        <Route path="/investor/login" element={<InvestorLogin />} />
-        <Route path="/investor/dashboard" element={<InvestorDashboard />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/email-confirmation" element={<EmailConfirmation />} />
-
-        <Route path="/property/details" element={<PropertyDetails />} />
-        <Route path="/property/listed" element={<PropertyListed />} />
-        <Route path="/photo/upload" element={<PhotoUpload />} />
-        <Route path="/photo/upload/intro" element={<PhotoUploadIntro />} />
-
-        <Route path="/investor/success" element={<InvestorSuccess />} />
-        <Route path="/congratulations" element={<Congratulations />} />
+        {Object.entries(routeMap).map(([pageName, path]) => {
+          const Component = pageComponents[pageName];
+          return <Route key={pageName} path={path} element={<Component />} />;
+        })}
       </Routes>
     </LayoutComponent>
   );
