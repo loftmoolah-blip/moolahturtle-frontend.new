@@ -9,6 +9,7 @@ import { InvestorService } from '@/components/services/investorService';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { useToast } from '@/components/common/Toast';
 import { useFormValidation, ValidatedInput, validationRules } from '@/components/common/FormValidation';
+import { useAuth } from '@/components/hooks/useAuth';
 
 const AnimatedTurtle = () => (
   <div className="text-6xl">
@@ -19,6 +20,7 @@ const AnimatedTurtle = () => (
 export default function InvestorLogin() {
   const navigate = useNavigate();
   const { success, error } = useToast();
+  const { login: authLogin } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,13 +54,12 @@ export default function InvestorLogin() {
         navigate(createPageUrl(`EmailConfirmation?email=${encodeURIComponent(response.user.email)}`));
         return;
       }
-      
-      localStorage.setItem('investorId', response.user.id);
-      localStorage.setItem('investorEmail', response.user.email);
+
+      await authLogin(response.token, response.user);
       success('Login successful! Redirecting to dashboard...');
       navigate(createPageUrl('InvestorDashboard'));
     } catch (err) {
-      error(err.message || 'Invalid email or password'); 
+      error(err.message || 'Invalid email or password');
     } finally {
       setIsLoading(false);
     }
