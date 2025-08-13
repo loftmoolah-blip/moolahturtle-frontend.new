@@ -20,7 +20,8 @@ export default function Register() {
   // Backend requires (000)-000-0000
   const registrationSchema = {
     full_name: [validationRules.required, validationRules.minLength(2)],
-    phone: [validationRules.required, (v) => /^\(\d{3}\)-\d{3}-\d{4}$/.test(v) || 'Use (000)-000-0000 format']
+    phone: [validationRules.required, (v) => /^\(\d{3}\)-\d{3}-\d{4}$/.test(v) || 'Use (000)-000-0000 format'],
+  };
 
   const registrationForm = useFormValidation({ full_name: '', phone: '' }, registrationSchema);
 
@@ -90,7 +91,7 @@ export default function Register() {
         localStorage.setItem('moolahturtle_sellerId', sellerId);
       }
       success('Phone verified successfully!');
-      navigate(createPageUrl(`PropertyDetails${sellerId ? \`?seller_id=\${sellerId}\` : ''}`));
+        navigate(createPageUrl(`PropertyDetails${sellerId ? `?seller_id=${sellerId}` : ''}`));
     } catch (err) {
       error(err?.message || 'Invalid verification code. Please try again.');
     } finally {
